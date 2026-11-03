@@ -1,0 +1,8 @@
+# Workspace root: no package here. Install everything with
+#   pip install -r requirements-dev.txt
+# and run all test suites with
+#   python scripts/run_tests.py
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["venv", ".venv"]

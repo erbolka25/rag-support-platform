@@ -1,0 +1,22 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.vscode/
+*.egg-info/
+build/
+dist/
+.env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+*.db
+
+# Runtime data
+packages/rag_core/data/uploads/
+packages/rag_core/data/index/
+packages/rag_core/data/eval/report.json
+apps/support_copilot/data/
+apps/support_copilot/demo/data/
+apps/support_copilot/demo/data_clinic/

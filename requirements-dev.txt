@@ -1,0 +1,3 @@
+# One command for the whole workspace: pip install -r requirements-dev.txt
+-e ./packages/rag_core[dev]
+-e ./apps/support_copilot[dev]

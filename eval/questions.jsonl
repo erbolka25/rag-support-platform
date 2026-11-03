@@ -1,0 +1,50 @@
+{"id": "a01", "lang": "ru", "question": "Сколько стоит доставка по Бишкеку?", "expected_answer": "Доставка по Бишкеку стоит 150 сомов, от 3000 сомов — бесплатно.", "expected_source": "delivery.txt", "key_facts": ["150"]}
+{"id": "a02", "lang": "ru", "question": "С какой суммы доставка по Бишкеку бесплатная?", "expected_answer": "При заказе от 3000 сомов.", "expected_source": "delivery.txt", "key_facts": ["3000"]}
+{"id": "a03", "lang": "ru", "question": "Если я закажу в 12 часов дня, когда привезут?", "expected_answer": "Заказ до 14:00 привозят в тот же день.", "expected_source": "delivery.txt", "key_facts": ["тот же день"]}
+{"id": "a04", "lang": "ru", "question": "Сколько стоит доставка в Каракол и сколько ждать?", "expected_answer": "350 сомов, от 2 до 4 рабочих дней.", "expected_source": "delivery.txt", "key_facts": ["350", "2", "4"]}
+{"id": "a05", "lang": "ru", "question": "Сколько стоит подъём холодильника на 5 этаж без лифта?", "expected_answer": "100 сомов за этаж, т.е. 500 сомов за подъём; доставка крупной техники 500 сомов.", "expected_source": "delivery.txt", "key_facts": ["100"]}
+{"id": "a06", "lang": "ru", "question": "За сколько минут курьер звонит перед приездом?", "expected_answer": "За 30 минут.", "expected_source": "delivery.txt", "key_facts": ["30"]}
+{"id": "a07", "lang": "ru", "question": "Можно ли оплатить наличными заказ на 40 000 сомов?", "expected_answer": "Нет, наличными при получении можно оплатить только заказы до 30 000 сомов.", "expected_source": "payment.txt", "key_facts": ["30"]}
+{"id": "a08", "lang": "ru", "question": "Какими способами можно оплатить заказ?", "expected_answer": "Картой Visa, Mastercard, Элкарт, через MBank и О!Деньги по QR, наличными или картой курьеру.", "expected_source": "payment.txt", "key_facts": ["Элкарт", "MBank"]}
+{"id": "a09", "lang": "ru", "question": "Сколько действует счёт для юридического лица?", "expected_answer": "3 банковских дня.", "expected_source": "payment.txt", "key_facts": ["3"]}
+{"id": "a10", "lang": "ru", "question": "Деньги списались, а заказ не подтвердился. Когда вернут?", "expected_answer": "Автоматически в течение 5 рабочих дней.", "expected_source": "payment.txt", "key_facts": ["5"]}
+{"id": "a11", "lang": "ru", "question": "Сколько дней есть на возврат товара?", "expected_answer": "14 дней со дня получения.", "expected_source": "returns.txt", "key_facts": ["14"]}
+{"id": "a12", "lang": "ru", "question": "Можно ли вернуть шампунь надлежащего качества?", "expected_answer": "Нет, косметика и бытовая химия надлежащего качества возврату не подлежат.", "expected_source": "returns.txt", "key_facts": ["космет"]}
+{"id": "a13", "lang": "ru", "question": "Сколько стоит курьерский забор товара для возврата?", "expected_answer": "150 сомов для товара надлежащего качества, бесплатно для бракованного.", "expected_source": "returns.txt", "key_facts": ["150"]}
+{"id": "a14", "lang": "ru", "question": "Через сколько вернут деньги за возвращённый товар?", "expected_answer": "В течение 7 рабочих дней после поступления товара на склад.", "expected_source": "returns.txt", "key_facts": ["7"]}
+{"id": "a15", "lang": "ru", "question": "Какая гарантия на чайник?", "expected_answer": "12 месяцев.", "expected_source": "warranty.txt", "key_facts": ["12"]}
+{"id": "a16", "lang": "ru", "question": "Какая гарантия на стиральную машину?", "expected_answer": "24 месяца.", "expected_source": "warranty.txt", "key_facts": ["24"]}
+{"id": "a17", "lang": "ru", "question": "Где находится сервисный центр?", "expected_answer": "Бишкек, улица Токтогула, 112.", "expected_source": "warranty.txt", "key_facts": ["Токтогул", "112"]}
+{"id": "a18", "lang": "ru", "question": "Что будет, если ремонт по гарантии затянется больше трёх недель?", "expected_answer": "Если ремонт длится дольше 21 дня, товар заменят или вернут деньги.", "expected_source": "warranty.txt", "key_facts": ["21"]}
+{"id": "a19", "lang": "ru", "question": "Какой кэшбэк на золотом уровне?", "expected_answer": "7%.", "expected_source": "loyalty.txt", "key_facts": ["7"]}
+{"id": "a20", "lang": "ru", "question": "Какую часть заказа можно оплатить бонусами?", "expected_answer": "До 30% стоимости заказа.", "expected_source": "loyalty.txt", "key_facts": ["30"]}
+{"id": "a21", "lang": "ru", "question": "Когда сгорают бонусы?", "expected_answer": "Через 12 месяцев после начисления.", "expected_source": "loyalty.txt", "key_facts": ["12"]}
+{"id": "a22", "lang": "ru", "question": "Сколько бонусов дарят на день рождения?", "expected_answer": "500 бонусов на 7 дней.", "expected_source": "loyalty.txt", "key_facts": ["500"]}
+{"id": "a23", "lang": "ru", "question": "Сколько дней заказ хранится в пункте выдачи?", "expected_answer": "5 дней.", "expected_source": "stores_and_contacts.txt", "key_facts": ["5"]}
+{"id": "a24", "lang": "ru", "question": "До скольки работает служба поддержки?", "expected_answer": "Ежедневно с 8:00 до 22:00.", "expected_source": "stores_and_contacts.txt", "key_facts": ["22"]}
+{"id": "a25", "lang": "ru", "question": "Какая минимальная сумма заказа?", "expected_answer": "500 сомов.", "expected_source": "orders.txt", "key_facts": ["500"]}
+{"id": "a26", "lang": "ru", "question": "Можно ли отменить заказ, если курьер уже выехал?", "expected_answer": "Да, но стоимость доставки не возвращается.", "expected_source": "orders.txt", "key_facts": ["доставк"]}
+{"id": "a27", "lang": "ky", "question": "Бишкекке жеткирүү канча турат?", "expected_answer": "150 сом, 3000 сомдон ашса акысыз.", "expected_source": "delivery.txt", "key_facts": ["150"]}
+{"id": "a28", "lang": "ky", "question": "Товарды канча күндүн ичинде кайтарып берсе болот?", "expected_answer": "14 күн.", "expected_source": "returns.txt", "key_facts": ["14"]}
+{"id": "a29", "lang": "ky", "question": "Чайникке кепилдик канча?", "expected_answer": "12 ай.", "expected_source": "warranty.txt", "key_facts": ["12"]}
+{"id": "a30", "lang": "ky", "question": "Колдоо кызматынын телефон номери кандай?", "expected_answer": "0312 55 77 00.", "expected_source": "stores_and_contacts.txt", "key_facts": ["0312"]}
+{"id": "a31", "lang": "ky", "question": "Бонустар менен заказдын канча пайызын төлөсө болот?", "expected_answer": "30% чейин.", "expected_source": "loyalty.txt", "key_facts": ["30"]}
+{"id": "a32", "lang": "en", "question": "How much does delivery to Osh cost?", "expected_answer": "350 som, 2 to 4 working days.", "expected_source": "delivery.txt", "key_facts": ["350"]}
+{"id": "a33", "lang": "en", "question": "What is the warranty on a phone charger?", "expected_answer": "6 months for accessories.", "expected_source": "warranty.txt", "key_facts": ["6"]}
+{"id": "a34", "lang": "en", "question": "What are the opening hours of the pickup points?", "expected_answer": "Daily from 10:00 to 20:00.", "expected_source": "stores_and_contacts.txt", "key_facts": ["10", "20"]}
+{"id": "a35", "lang": "en", "question": "How much do I need to spend in a year to reach the Silver level?", "expected_answer": "50,000 som per calendar year.", "expected_source": "loyalty.txt", "key_facts": ["50000"]}
+{"id": "a36", "lang": "en", "question": "What is the maximum number of items in one order?", "expected_answer": "50 items.", "expected_source": "orders.txt", "key_facts": ["50"]}
+{"id": "n01", "lang": "ru", "question": "Есть ли у вас вакансии курьеров?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n02", "lang": "ru", "question": "Продаёте ли вы подарочные сертификаты?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n03", "lang": "ru", "question": "Есть ли парковка у пункта выдачи на проспекте Чуй?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n04", "lang": "ru", "question": "Можно ли купить товар в рассрочку на 12 месяцев?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n05", "lang": "ru", "question": "Есть ли у вас мобильное приложение для iPhone?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n06", "lang": "ru", "question": "Сколько стоит сборка шкафа после доставки?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n07", "lang": "ru", "question": "Кто является директором компании?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n08", "lang": "ru", "question": "Доставляете ли вы в Алматы?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n09", "lang": "ky", "question": "Курьер болуп иштөөгө жумуш барбы?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n10", "lang": "ky", "question": "Белек сертификаттарын сатасыздарбы?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n11", "lang": "ky", "question": "Дүкөндүн жанында унаа токтотуучу жай барбы?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n12", "lang": "en", "question": "Do you offer franchise opportunities?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n13", "lang": "en", "question": "Can I pay with Bitcoin?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
+{"id": "n14", "lang": "en", "question": "Do you have a student discount?", "expected_answer": "NO_ANSWER", "expected_source": null, "key_facts": []}
