@@ -300,3 +300,19 @@ def test_multiple_runs_aggregate_and_group_failures(tmp_path, monkeypatch):
     text = (tmp_path / "R.md").read_text(encoding="utf-8")
     assert "Mean ± SD (2 runs)" in text and "| Failed runs |" in text
     assert "## Dataset changelog" in text
+
+
+def test_keep_runs_recomputes_metrics_from_the_kept_runs():
+    rows = [
+        {**vars(make_row(id="a", answer="x [1]", facts_ok=True, citation_statuses=["ok"], run=1)),
+         "question": "q"},
+        {**vars(make_row(id="a", answer="x [1]", facts_ok=True, citation_statuses=["ok"], run=2)),
+         "question": "q"},
+        {**vars(make_row(id="a", llm_error="rate_limit", run=3)), "question": "q"},
+    ]
+    report = {"config": {"mode": "full", "runs": 3, "llm_judge": False}, "rows": rows}
+    kept = run_eval.keep_runs(report, [1, 2])
+    assert kept["config"]["runs"] == 2 and kept["config"]["runs_recorded"] == 3
+    assert {r["run"] for r in kept["rows"]} == {1, 2}
+    assert kept["metrics_spread"]["answer_accuracy"]["values"] == [1.0, 1.0]
+    assert kept["metrics"]["llm_errors"] == 0

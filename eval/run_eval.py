@@ -518,6 +518,8 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
            f"{cfg['rate_limit_retries']} rate-limit retries)" if cfg["llm"] else ", no LLM")
         + (f", **{cfg['runs']} runs** (SD is the sample standard deviation across runs)"
            if cfg.get("runs", 1) > 1 else "")
+        + (f"; runs {', '.join(map(str, cfg['runs_kept']))} of {cfg['runs_recorded']} recorded "
+           "are reported (the others are in the raw results)" if cfg.get("runs_kept") else "")
         + f". Raw results: `{display_path(result_file)}`.",
         "",
         *spread_lines(report, cfg["top_k"]),
@@ -586,6 +588,30 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
+def keep_runs(report: dict, runs: list[int]) -> dict:
+    """The report restricted to some runs, with metrics recomputed from their rows."""
+    names = {f.name for f in fields(Row)}
+    use_llm = report["config"]["mode"] == "full"
+    judge = report["config"].get("llm_judge", False)
+    kept = [r for r in report["rows"] if r.get("run", 1) in runs]
+    per_run = [
+        compute_metrics([Row(**{k: v for k, v in r.items() if k in names})
+                         for r in kept if r.get("run", 1) == n], use_llm, judge)
+        for n in runs
+    ]
+    s = spread(per_run)
+    config = report["config"] | {"runs": len(runs), "runs_kept": runs,
+                                 "runs_recorded": report["config"].get("runs", 1)}
+    return report | {
+        "config": config,
+        "metrics": {key: (v["mean"] if v else None) for key, v in s.items()},
+        "metrics_spread": s,
+        "by_language": metrics_by_lang([Row(**{k: v for k, v in r.items() if k in names})
+                                        for r in kept], use_llm),
+        "rows": kept,
+    }
+
+
 CHANGELOG = EVAL_DIR / "dataset" / "CHANGELOG.md"
 
 
@@ -627,9 +653,14 @@ def main(argv: list[str] | None = None) -> None:
                         help="Markdown explaining the changes since the baseline, put under the table")
     parser.add_argument("--render", type=Path, default=None,
                         help="rebuild REPORT.md from a saved result JSON, without running anything")
+    parser.add_argument("--keep-runs", type=str, default=None,
+                        help="with --render: comma-separated run numbers to report, e.g. 1,2 "
+                             "(drop a run cut short by a provider limit)")
     args = parser.parse_args(argv)
     if args.render:
         report = json.loads(args.render.read_text(encoding="utf-8"))
+        if args.keep_runs:
+            report = keep_runs(report, [int(n) for n in args.keep_runs.split(",")])
         add_comparison(report, args, load_questions(args.questions))
         write_report(report, args.report, args.render)
         print(f"Rebuilt {args.report} from {args.render}")
