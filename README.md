@@ -131,18 +131,25 @@ first three questions all fail (wrong key, no balance), the run stops without wr
 ## Quality
 
 <!-- metrics:start -->
-Retrieval-only run, 2026-11-03: 50 questions (36 answerable, 14 NO_ANSWER; RU/KY/EN),
-7 documents, `multilingual-e5-small`, top_k=5, min_score=0.75. Details:
-[eval/REPORT.md](eval/REPORT.md).
+Full run, 2026-11-03: `openai/gpt-oss-120b` on Groq, 50 questions (36 answerable,
+14 NO_ANSWER; RU/KY/EN), 7 documents, `multilingual-e5-small`, top_k=5, min_score=0.75.
+Details and every failure: [eval/REPORT.md](eval/REPORT.md).
 
 | Metric | Value |
 |---|---|
-| Retrieval Recall@5 | 97.2% (35/36; RU 96%, KY 100%, EN 100%) |
-| Retrieval MRR | 0.908 |
-| Retrieval gate: refusal recall | 0% (all 14 NO_ANSWER questions pass `min_score`) |
-| Retrieval gate: false refusals | 0% |
-| Search latency p50 / p95 | 23 / 27 ms (CPU) |
-| Answer accuracy, citation validity, NO_ANSWER P/R, hallucination rate | not measured yet — need a full run with an LLM key |
+| Retrieval Recall@5 / MRR | 97.2% (35/36) / 0.908 |
+| Answer accuracy (key facts) | 72.2% (26/36) |
+| Citation validity | 100% of answers (lexical check) |
+| NO_ANSWER recall | 100% (14/14 unanswerable questions refused) |
+| Hallucination rate | 0% (0/14) |
+| NO_ANSWER precision | 60.9% (14 of 23 refusals were correct) |
+| False refusal rate | 25% (9/36) |
+| Latency p50 / p95 (full ask) | 832 / 1247 ms |
+
+Most false refusals are not retrieval or model knowledge failures: `gpt-oss-120b` often
+cites as `【1】` instead of `[1]`, rag_core finds no valid citation and discards the answer.
+The retrieval-only gate (`min_score`) refuses none of the 14 unanswerable questions; all
+refusals come from the model.
 <!-- metrics:end -->
 
 **Dense vs hybrid.** rag_core retrieves with dense embeddings only. An experiment in
