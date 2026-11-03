@@ -131,30 +131,37 @@ first three questions all fail (wrong key, no balance), the run stops without wr
 ## Quality
 
 <!-- metrics:start -->
-Full runs, 2026-11-03: `openai/gpt-oss-120b` on Groq, 50 questions (36 answerable,
-14 NO_ANSWER; RU/KY/EN), 7 documents, `multilingual-e5-small`, top_k=5, min_score=0.75.
-Details, the split into measurement vs system changes, and every failure:
+Final, frozen evaluation (2026-11-04): `openai/gpt-oss-120b` on Groq, 50 questions
+(36 answerable, 14 NO_ANSWER; RU/KY/EN), 7 documents, `multilingual-e5-small`, top_k=5,
+min_score=0.75. **Mean ± SD over N = 2 full runs**; a third run hit Groq's free-tier
+daily token limit (33/50 questions without an LLM answer) and is excluded. Details, the
+split into measurement vs system changes, every failure and the dataset changelog:
 [eval/REPORT.md](eval/REPORT.md).
 
-| Metric | Baseline | After fixes |
+| Metric | Baseline (1 run) | Final (mean ± SD, N = 2) |
 |---|---|---|
 | Retrieval Recall@5 / MRR | 97.2% / 0.908 | 97.2% (35/36) / 0.908 |
-| Answer accuracy (key facts) | 72.2% | 91.7% (33/36) |
-| False refusal rate | 25.0% | 2.8% (1/36) |
-| NO_ANSWER precision | 60.9% | 92.9% |
-| NO_ANSWER recall | 100% | 92.9% (13/14) |
-| Hallucination rate | 0% | 7.1% (1/14) |
-| Citation validity | 100% | 94.4% (2 answers unverifiable: cross-language) |
-| Latency p50 / p95 (full ask) | 832 / 1247 ms | 888 / 3927 ms |
+| Answer accuracy (key facts) | 72.2% | 95.8% ± 2.0 pp |
+| False refusal rate | 25.0% | 2.8% ± 0.0 pp |
+| NO_ANSWER precision | 60.9% | 93.1% ± 0.3 pp |
+| NO_ANSWER recall | 100% | 96.5% ± 5.0 pp |
+| Hallucination rate | 0% | 3.5% ± 5.0 pp (1 answer in 28) |
+| Citation validity | 100% | 98.6% ± 2.1 pp |
+| Latency p50 / p95 (full ask) | 832 / 1247 ms | 769 ± 39 / 1500 ± 79 ms |
 
 What changed: rag_core now accepts `【1】`-style citation markers, which `gpt-oss-120b`
-often writes; before, those correct answers were discarded as uncited (8 of 9 false
-refusals). Of the accuracy gain, +2.8 pp is a fix to the measurement (12-hour time in the
-key-fact check), not to the system. The one "hallucination" (n13, "Can I pay with
-Bitcoin?" → "No, not listed [1]") is an inference from the payment page that the benchmark
-labels as unanswerable; in the baseline the model refused the same question. The
-retrieval-only gate (`min_score`) refuses none of the 14 unanswerable questions; all
-refusals come from the model.
+often writes; before, those correct answers were discarded as uncited (8 of 9 baseline
+false refusals). Of the accuracy gain, +2.8 pp is a fix to the measurement (12-hour time in
+the key-fact check), not to the system. The one hallucination is n13 "Can I pay with
+Bitcoin?" → "No, Bitcoin is not accepted [1]", a question whose label is disputed (see
+[eval/dataset/LABELING.md](eval/dataset/LABELING.md)). The retrieval-only gate
+(`min_score`) refuses none of the 14 unanswerable questions; all refusals come from the
+model. Labels follow a rule written before the review; no prompt was tuned to the
+benchmark.
+
+Support Copilot shop demo (10 tickets, `gpt-oss-120b`): 10/10 expected decisions
+(7 drafted, 3 escalated); before the citation fix 8/10. Transcript:
+[eval/results/2026-11-03_copilot_demo.txt](eval/results/2026-11-03_copilot_demo.txt).
 <!-- metrics:end -->
 
 **Dense vs hybrid.** rag_core retrieves with dense embeddings only. An experiment in

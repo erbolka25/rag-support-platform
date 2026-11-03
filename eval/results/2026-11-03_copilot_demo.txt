@@ -1,0 +1,56 @@
+Copilot shop demo: python apps/support_copilot/demo/seed.py --reset
+Run 2026-11-03 after fix(rag_core) dc077b1, LLM openai/gpt-oss-120b @ api.groq.com.
+Before that fix the same demo gave 8/10 (two drafts escalated as no_valid_citations: 【1】 markers).
+Check: expected decision (draft vs escalate) per ticket; the 7 drafts were also checked by hand against demo/kb.
+
+LLM enabled: True
+
+Knowledge base:
+  delivery.txt     3 chunks
+  payment.txt      3 chunks
+  returns.txt      3 chunks
+  warranty.txt     3 chunks
+
+Tickets:
+
+OK #1 [drafted] Здравствуйте! Сколько стоит доставка в Ош и сколько дней ждать заказ?
+    answer:  Доставка в Ош стоит 350 сом и занимает 2–3 рабочих дня [1]
+    sources: delivery.txt
+
+OK #2 [drafted] Купил наушники-вкладыши, вскрыл упаковку, но звук не понравился. Могу я их вернуть?
+    answer:  Нет, наушники‑вкладыши с открытой упаковкой не подлежат возврату или обмену [1].
+    sources: returns.txt
+
+OK #3 [drafted] Hi, I live in Bishkek. Can I pay in cash to the courier when my order arrives?
+    answer:  Yes, you can pay in cash (or by card) to the courier when the order is delivered in Bishkek. [1]
+    sources: payment.txt
+
+OK #4 [drafted] Какая гарантия на ноутбук и куда его нести, если он сломался?
+    answer:  Гарантия на ноутбук составляет 24 месяца [1]. Если ноутбук сломался, его нужно принести в сервисный центр TechNomad (Бишкек, ул. Киевская 95, второй этаж) вмес…
+    sources: warranty.txt
+
+OK #5 [drafted] Саламатсызбы! Ноутбукка кепилдик канча убакытка берилет?
+    answer:  Ноутбукка 24 айлык кепилдик берилет. [1]
+    sources: warranty.txt
+
+OK #6 [drafted] Я вернула товар, который оплачивала банковской картой. Когда мне вернут деньги?
+    answer:  Деньги будут зачислены на вашу банковскую карту в течение 5–10 рабочих дней после того, как магазин получит возвращённый товар [1].
+    sources: returns.txt
+
+OK #7 [drafted] Does the warranty cover a cracked smartphone screen?
+    answer:  The warranty does not cover a cracked smartphone screen, as mechanical damage such as screen cracks is excluded from coverage[1].
+    sources: warranty.txt
+
+OK #8 [escalated] Есть ли у вас программа лояльности или бонусные баллы за покупки?
+    reason:  no_answer_in_kb
+    note:    Эскалация: В базе знаний нет ответа на этот вопрос. Пояснение модели: В предоставленных документах нет информации о программе лояльности или бонусных баллах.
+
+OK #9 [escalated] Вы продаёте восстановленные iPhone? Какая на них цена?
+    reason:  no_answer_in_kb
+    note:    Эскалация: В базе знаний нет ответа на этот вопрос. Пояснение модели: Документы не содержат информации о продаже восстановленных iPhone и их ценах.
+
+OK #10 [escalated] Можно сдать мой старый смартфон в зачёт нового (trade-in)? Сколько вы за него дадите?
+    reason:  no_answer_in_kb
+    note:    Эскалация: В базе знаний нет ответа на этот вопрос. Пояснение модели: документы не содержат эту информацию.
+
+Summary: 7 drafted, 3 escalated; 10/10 as expected.
