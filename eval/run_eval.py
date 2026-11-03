@@ -94,6 +94,7 @@ class Row:
     # Full mode only: the LLM call failed (rag_core fell back to retrieval-only). Such rows
     # say nothing about answer quality, so they are left out of the answer metrics.
     llm_error: str | None = None
+    run: int = 1
 
 
 def load_questions(path: Path) -> list[Question]:
@@ -346,9 +347,64 @@ LABELS = {
 def fmt(key: str, value) -> str:
     if value is None:
         return "—"
-    if isinstance(value, int) and not isinstance(value, bool):
-        return str(value)
+    if key == "llm_errors" or (isinstance(value, int) and not isinstance(value, bool)):
+        return f"{value:g}"
     return f"{value:.0f}" if key.startswith("latency") else f"{value:.1%}" if key != "mrr" else f"{value:.3f}"
+
+
+def spread(per_run: list[dict]) -> dict:
+    """Mean, sample SD, min, max and the values of every metric across runs."""
+    out: dict = {}
+    for key in per_run[0]:
+        values = [m[key] for m in per_run if m.get(key) is not None]
+        if not values:
+            out[key] = None
+            continue
+        arr = np.array(values, dtype=float)
+        out[key] = {
+            "mean": float(arr.mean()),
+            "sd": float(arr.std(ddof=1)) if len(arr) > 1 else 0.0,
+            "min": float(arr.min()),
+            "max": float(arr.max()),
+            "values": values,
+        }
+    return out
+
+
+def fmt_spread(key: str, s: dict | None) -> str:
+    """mean ± SD in the metric's own unit; the SD of a rate is in percentage points."""
+    if s is None:
+        return "—"
+    if key.startswith("latency"):
+        return f"{s['mean']:.0f} ± {s['sd']:.0f}"
+    if key == "mrr":
+        return f"{s['mean']:.3f} ± {s['sd']:.3f}"
+    if key == "llm_errors":
+        return f"{s['mean']:g} ± {s['sd']:.1f}"
+    return f"{s['mean']:.1%} ± {s['sd'] * 100:.1f} pp"
+
+
+def spread_lines(report: dict, k: int) -> list[str]:
+    runs = report["config"].get("runs", 1)
+    if runs < 2:
+        return [
+            "| Metric | Value |",
+            "|---|---|",
+            *[f"| {name.strip()} | {value} |" for name, value in metric_table(report["metrics"], k)],
+        ]
+    lines = [
+        f"| Metric | Mean ± SD ({runs} runs) | Min – max | Per run |",
+        "|---|---|---|---|",
+    ]
+    for key, s in report["metrics_spread"].items():
+        name = LABELS.get(key, key).format(k=k).strip()
+        if s is None:
+            lines.append(f"| {name} | — | — | — |")
+            continue
+        per_run = ", ".join(fmt(key, v) for v in s["values"])
+        lines.append(f"| {name} | {fmt_spread(key, s)} | {fmt(key, s['min'])} – {fmt(key, s['max'])} "
+                     f"| {per_run} |")
+    return lines
 
 
 def metric_table(metrics: dict, k: int) -> list[tuple[str, str]]:
@@ -414,8 +470,8 @@ def fmt_delta(key: str, new, old) -> str:
         return f"{delta:+.0f} ms"
     if key == "mrr":
         return f"{delta:+.3f}"
-    if isinstance(new, int) and not isinstance(new, bool):
-        return f"{delta:+d}"
+    if key == "llm_errors" or (isinstance(new, int) and not isinstance(new, bool)):
+        return f"{delta:+g}"
     return f"{delta * 100:+.1f} pp"
 
 
@@ -460,13 +516,14 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
         f"embedding `{cfg['embedding_model']}`, top_k={cfg['top_k']}, min_score={cfg['min_score']}"
         + (f", LLM **`{cfg['llm']}`** (delay {cfg['delay_s']:g} s, "
            f"{cfg['rate_limit_retries']} rate-limit retries)" if cfg["llm"] else ", no LLM")
+        + (f", **{cfg['runs']} runs** (SD is the sample standard deviation across runs)"
+           if cfg.get("runs", 1) > 1 else "")
         + f". Raw results: `{display_path(result_file)}`.",
         "",
-        "| Metric | Value |",
-        "|---|---|",
-        *[f"| {name.strip()} | {value} |" for name, value in metric_table(report["metrics"], cfg["top_k"])],
+        *spread_lines(report, cfg["top_k"]),
         "",
         *comparison_lines(report, cfg["top_k"]),
+        *changelog_lines(),
         "## By language",
         "",
         "| Lang | Questions | Recall@k | Refused answerable | Answered NO_ANSWER |"
@@ -480,8 +537,11 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
             line += f" {fmt('a', m['answer_accuracy'])} |"
         lines.append(line)
 
-    failures = []
+    runs = cfg.get("runs", 1)
+    by_question: dict[str, list[tuple[int, list[str]]]] = {}
+    questions_text = {}
     for r in rows:
+        questions_text[r["id"]] = (r["lang"], r["question"])
         problems = []
         if r["llm_error"]:
             problems.append(f"LLM error: {r['llm_error']}")
@@ -497,10 +557,15 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
         if bad:
             problems.append(f"citations {bad}")
         if problems:
-            failures.append(f"| {r['id']} | {r['lang']} | {r['question']} | {'; '.join(problems)} |")
+            by_question.setdefault(r["id"], []).append((r.get("run", 1), problems))
+    failures = []
+    for qid, hits in by_question.items():
+        lang, question = questions_text[qid]
+        detail = "; ".join(dict.fromkeys(p for _, problems in hits for p in problems))
+        failures.append(f"| {qid} | {lang} | {question} | {len(hits)}/{runs} | {detail} |")
     lines += ["", "## Failures", ""]
     if failures:
-        lines += ["| ID | Lang | Question | Problem |", "|---|---|---|---|", *failures]
+        lines += ["| ID | Lang | Question | Failed runs | Problem |", "|---|---|---|---|---|", *failures]
     else:
         lines.append("None.")
     lines += [
@@ -519,6 +584,15 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
         "",
     ]
     path.write_text("\n".join(lines), encoding="utf-8")
+
+
+CHANGELOG = EVAL_DIR / "dataset" / "CHANGELOG.md"
+
+
+def changelog_lines() -> list[str]:
+    if not CHANGELOG.exists():
+        return []
+    return ["## Dataset changelog", "", CHANGELOG.read_text(encoding="utf-8").strip(), ""]
 
 
 def llm_label(service: RagService) -> str:
@@ -541,6 +615,8 @@ def main(argv: list[str] | None = None) -> None:
                         help="seconds to wait before every LLM call (full mode; default 2)")
     parser.add_argument("--max-retries", type=int, default=4,
                         help="retries of a rate-limited LLM call, with backoff 5, 10, 20, 40 s")
+    parser.add_argument("--runs", type=int, default=1,
+                        help="repeat the whole question set N times; the report shows mean ± SD")
     parser.add_argument("--top-k", type=int, default=5)
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--out-dir", type=Path, default=EVAL_DIR / "results")
@@ -567,6 +643,7 @@ def main(argv: list[str] | None = None) -> None:
         args.env_file = ENV_FILE
 
     questions = load_questions(args.questions)
+    by_id = {q.id: q for q in questions}
     with tempfile.TemporaryDirectory(prefix="rag-eval-") as tmp:
         service = build(args, Path(tmp))
         use_llm = service.llm is not None
@@ -576,16 +653,22 @@ def main(argv: list[str] | None = None) -> None:
         documents = index_kb(service, args.kb)
         service.embedder.embed_query("warm-up")  # keep model loading out of latency
         pacer = Pacer(delay_s=args.delay if use_llm else 0, max_retries=args.max_retries)
-        rows = []
-        for i, q in enumerate(questions, 1):
-            row = evaluate_question(service, q, args.top_k, use_llm, args.llm_judge, pacer)
-            rows.append(row)
-            if len(rows) == 3 and all(r.llm_error for r in rows):
-                sys.exit(f"The LLM failed on the first 3 questions ({row.llm_error}); "
-                         "fix the key or quota, or run with --mode retrieval.")
-            status = "refused" if row.refused else "answered"
-            print(f"[{i:>2}/{len(questions)}] {q.id} {q.lang} {status:<8} {row.latency_ms:>7.0f} ms",
-                  file=sys.stderr)
+        rows: list[Row] = []
+        per_run: list[dict] = []
+        for run in range(1, args.runs + 1):
+            run_rows = []
+            for i, q in enumerate(questions, 1):
+                row = evaluate_question(service, q, args.top_k, use_llm, args.llm_judge, pacer)
+                row.run = run
+                run_rows.append(row)
+                if len(run_rows) == 3 and all(r.llm_error for r in run_rows):
+                    sys.exit(f"The LLM failed on the first 3 questions ({row.llm_error}); "
+                             "fix the key or quota, or run with --mode retrieval.")
+                status = "refused" if row.refused else "answered"
+                print(f"[run {run}/{args.runs}] [{i:>2}/{len(questions)}] {q.id} {q.lang} "
+                      f"{status:<8} {row.latency_ms:>7.0f} ms", file=sys.stderr)
+            per_run.append(compute_metrics(run_rows, use_llm, args.llm_judge))
+            rows += run_rows
         settings = service.settings
 
     report = {
@@ -604,10 +687,12 @@ def main(argv: list[str] | None = None) -> None:
             "llm_base_url": settings.llm_base_url or None,
             "delay_s": pacer.delay_s,
             "rate_limit_retries": pacer.retries,
+            "runs": args.runs,
         },
-        "metrics": compute_metrics(rows, use_llm, args.llm_judge),
+        "metrics": {key: (s["mean"] if s else None) for key, s in spread(per_run).items()},
+        "metrics_spread": spread(per_run),
         "by_language": metrics_by_lang(rows, use_llm),
-        "rows": [asdict(r) | {"question": q.question} for r, q in zip(rows, questions, strict=True)],
+        "rows": [asdict(r) | {"question": by_id[r.id].question} for r in rows],
     }
     add_comparison(report, args, questions)
     args.out_dir.mkdir(parents=True, exist_ok=True)

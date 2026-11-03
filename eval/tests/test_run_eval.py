@@ -272,3 +272,31 @@ def test_render_rebuilds_report_with_baseline_comparison(tmp_path, monkeypatch):
     report = (tmp_path / "R.md").read_text(encoding="utf-8")
     assert "## Baseline → this run" in report and "Fix A changed X." in report
     assert "| Answer accuracy (key facts) |" in report
+
+
+def test_spread_reports_mean_sd_and_range():
+    s = run_eval.spread([{"answer_accuracy": 0.9, "x": None}, {"answer_accuracy": 0.8, "x": None},
+                         {"answer_accuracy": 1.0, "x": None}])
+    acc = s["answer_accuracy"]
+    assert acc["mean"] == pytest.approx(0.9) and acc["sd"] == pytest.approx(0.1)
+    assert (acc["min"], acc["max"], acc["values"]) == (0.8, 1.0, [0.9, 0.8, 1.0])
+    assert s["x"] is None
+    assert run_eval.fmt_spread("answer_accuracy", acc) == "90.0% ± 10.0 pp"
+    assert run_eval.fmt_spread("latency_p50_ms", {"mean": 850.4, "sd": 30.2}) == "850 ± 30"
+
+
+def test_multiple_runs_aggregate_and_group_failures(tmp_path, monkeypatch):
+    monkeypatch.setattr(run_eval, "build_service", lambda s: RagService(
+        s, HashingEmbedder(), create_index("numpy"), EchoLLM()))
+    run_eval.main(["--out-dir", str(tmp_path), "--report", str(tmp_path / "R.md"),
+                   "--env-file", str(tmp_path / "x.env"), "--min-score", "0.1", "--delay", "0",
+                   "--runs", "2"])
+    [result] = list(tmp_path.glob("*.json"))
+    report = json.loads(result.read_text(encoding="utf-8"))
+    assert report["config"]["runs"] == 2
+    assert len(report["rows"]) == 2 * report["config"]["questions"]
+    assert {r["run"] for r in report["rows"]} == {1, 2}
+    assert len(report["metrics_spread"]["answer_accuracy"]["values"]) == 2
+    text = (tmp_path / "R.md").read_text(encoding="utf-8")
+    assert "Mean ± SD (2 runs)" in text and "| Failed runs |" in text
+    assert "## Dataset changelog" in text
