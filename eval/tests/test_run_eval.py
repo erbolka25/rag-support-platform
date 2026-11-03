@@ -60,6 +60,13 @@ class EchoLLM(BaseLLMClient):
         ("30000", "до 30 000 сомов", True),
         ("тот же день", "Привезём в тот же день.", True),
         ("Элкарт", "картой элкарт", True),
+        ("20", "open daily from 10:00 AM to 8:00 PM", True),
+        ("10", "open daily from 10:00 AM to 8:00 PM", True),
+        ("20", "from 10 a.m. to 8 p.m.", True),
+        ("22", "support works 8am–10pm", True),
+        ("0", "from 12 AM", True),
+        ("12", "closes at 12:30 PM", True),
+        ("20", "open from 10:00 to 18:00", False),
     ],
 )
 def test_fact_present(fact, answer, expected):

@@ -106,8 +106,21 @@ def load_questions(path: Path) -> list[Question]:
 _DIGIT_SEPARATOR = re.compile(r"(?<=\d)[\s  ,](?=\d{3}\b)")
 
 
+_TWELVE_HOUR = re.compile(r"\b(\d{1,2})(?::(\d{2}))?\s*([ap])\.?\s*m\b\.?", re.IGNORECASE)
+
+
+def to_24_hour(text: str) -> str:
+    """Rewrite "8:00 PM" / "8 p.m." as "20:00", so key facts in 24-hour form still match."""
+
+    def convert(match: re.Match) -> str:
+        hour = int(match.group(1)) % 12 + (12 if match.group(3).lower() == "p" else 0)
+        return f"{hour}:{match.group(2) or '00'}"
+
+    return _TWELVE_HOUR.sub(convert, text)
+
+
 def normalize(text: str) -> str:
-    return _DIGIT_SEPARATOR.sub("", text.lower().replace("ё", "е"))
+    return _DIGIT_SEPARATOR.sub("", to_24_hour(text).lower().replace("ё", "е"))
 
 
 def fact_present(fact: str, answer: str) -> bool:
