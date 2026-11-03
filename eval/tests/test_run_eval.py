@@ -229,3 +229,46 @@ def test_judge_retries_rate_limits(tmp_path):
 def test_llm_label_names_model_and_host(tmp_path):
     assert run_eval.llm_label(_service(FlakyLLM(0), tmp_path)) == "llama-test @ api.groq.com"
     assert run_eval.llm_label(_service(EchoLLM(), tmp_path)) == "fake-model @ fake"
+
+
+def test_rescore_changes_only_the_fact_check():
+    baseline = {
+        "config": {"llm_judge": False},
+        "rows": [
+            {**vars(make_row(id="a34", answer="Open 10:00 AM to 8:00 PM [1]", facts_ok=False,
+                             missing_facts=["20"], citation_statuses=["ok"])),
+             "question": "hours?"},
+            {**vars(make_row(id="a04", refused=True, facts_ok=False)), "question": "q"},
+        ],
+    }
+    questions = [
+        run_eval.Question("a34", "en", "hours?", "10 to 20", "x.txt", ["10", "20"]),
+        run_eval.Question("a04", "ru", "q", "a", "x.txt", ["350"]),
+    ]
+    m = run_eval.rescore(baseline, questions)
+    assert m["answer_accuracy"] == 0.5  # a34 now passes; the refusal stays wrong
+    assert m["false_refusal_rate"] == 0.5
+
+
+def test_fmt_delta():
+    assert run_eval.fmt_delta("answer_accuracy", 0.75, 0.722) == "+2.8 pp"
+    assert run_eval.fmt_delta("latency_p50_ms", 800.0, 832.0) == "-32 ms"
+    assert run_eval.fmt_delta("mrr", 0.9, 0.9) == "+0.000"
+    assert run_eval.fmt_delta("llm_errors", 0, 2) == "-2"
+    assert run_eval.fmt_delta("citation_validity", None, 1.0) == "—"
+
+
+def test_render_rebuilds_report_with_baseline_comparison(tmp_path, monkeypatch):
+    monkeypatch.setattr(run_eval, "build_service", lambda s: RagService(
+        s, HashingEmbedder(), create_index("numpy"), EchoLLM()))
+    common = ["--out-dir", str(tmp_path), "--env-file", str(tmp_path / "x.env"),
+              "--min-score", "0.1", "--delay", "0"]
+    run_eval.main([*common, "--report", str(tmp_path / "first.md")])
+    [result] = list(tmp_path.glob("*.json"))
+    notes = tmp_path / "notes.md"
+    notes.write_text("Fix A changed X.", encoding="utf-8")
+    run_eval.main(["--render", str(result), "--baseline", str(result), "--notes", str(notes),
+                   "--report", str(tmp_path / "R.md")])
+    report = (tmp_path / "R.md").read_text(encoding="utf-8")
+    assert "## Baseline → this run" in report and "Fix A changed X." in report
+    assert "| Answer accuracy (key facts) |" in report

@@ -40,7 +40,7 @@ import sys
 import tempfile
 import time
 from collections.abc import Callable
-from dataclasses import asdict, dataclass, field
+from dataclasses import asdict, dataclass, field, fields
 from datetime import datetime
 from pathlib import Path
 from urllib.parse import urlparse
@@ -374,6 +374,81 @@ def display_path(path: Path) -> str:
         return path.as_posix()
 
 
+def rescore(baseline: dict, questions: list[Question]) -> dict:
+    """Metrics of the baseline's own answers under the current checks.
+
+    No LLM call: the answers are the recorded ones, so any change against the baseline
+    comes from fixes to the measurement, not from the system.
+    """
+    by_id = {q.id: q for q in questions}
+    names = {f.name for f in fields(Row)}
+    rows = []
+    for raw in baseline["rows"]:
+        row = Row(**{k: v for k, v in raw.items() if k in names})
+        q = by_id[row.id]
+        if q.answerable and not row.refused and row.answer and not row.llm_error:
+            row.missing_facts = [f for f in q.key_facts if not fact_present(f, row.answer)]
+            row.facts_ok = not row.missing_facts
+        rows.append(row)
+    return compute_metrics(rows, True, baseline["config"]["llm_judge"])
+
+
+def add_comparison(report: dict, args: argparse.Namespace, questions: list[Question]) -> None:
+    if not args.baseline:
+        return
+    baseline = json.loads(args.baseline.read_text(encoding="utf-8"))
+    report["comparison"] = {
+        "baseline_file": display_path(args.baseline),
+        "baseline_llm": baseline["config"]["llm"],
+        "baseline_metrics": baseline["metrics"],
+        "rescored_metrics": rescore(baseline, questions),
+        "notes": args.notes.read_text(encoding="utf-8") if args.notes else None,
+    }
+
+
+def fmt_delta(key: str, new, old) -> str:
+    if new is None or old is None:
+        return "—"
+    delta = new - old
+    if key.startswith("latency"):
+        return f"{delta:+.0f} ms"
+    if key == "mrr":
+        return f"{delta:+.3f}"
+    if isinstance(new, int) and not isinstance(new, bool):
+        return f"{delta:+d}"
+    return f"{delta * 100:+.1f} pp"
+
+
+def comparison_lines(report: dict, k: int) -> list[str]:
+    comparison = report.get("comparison")
+    if not comparison:
+        return []
+    base, rescored, now = comparison["baseline_metrics"], comparison["rescored_metrics"], report["metrics"]
+    lines = [
+        "## Baseline → this run",
+        "",
+        (f"Baseline: `{comparison['baseline_file']}` ({comparison['baseline_llm']}). The middle "
+         "column re-scores the baseline's recorded answers with the current checks: it isolates "
+         "fixes to the **measurement**. The last column is this run, so it adds fixes to the "
+         "**system** plus run-to-run sampling noise."),
+        "",
+        "| Metric | Baseline | Baseline, re-scored | This run | Δ measurement | Δ system |",
+        "|---|---|---|---|---|---|",
+    ]
+    for key in now:
+        if key not in base:
+            continue
+        name = LABELS.get(key, key).format(k=k).strip()
+        lines.append(
+            f"| {name} | {fmt(key, base[key])} | {fmt(key, rescored.get(key))} | {fmt(key, now[key])} "
+            f"| {fmt_delta(key, rescored.get(key), base[key])} "
+            f"| {fmt_delta(key, now[key], rescored.get(key))} |"
+        )
+    if comparison.get("notes"):
+        lines += ["", comparison["notes"].strip()]
+    return [*lines, ""]
+
+
 def write_report(report: dict, path: Path, result_file: Path) -> None:
     cfg, rows = report["config"], report["rows"]
     lines = [
@@ -391,6 +466,7 @@ def write_report(report: dict, path: Path, result_file: Path) -> None:
         "|---|---|",
         *[f"| {name.strip()} | {value} |" for name, value in metric_table(report["metrics"], cfg["top_k"])],
         "",
+        *comparison_lines(report, cfg["top_k"]),
         "## By language",
         "",
         "| Lang | Questions | Recall@k | Refused answerable | Answered NO_ANSWER |"
@@ -469,7 +545,19 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--min-score", type=float, default=None)
     parser.add_argument("--out-dir", type=Path, default=EVAL_DIR / "results")
     parser.add_argument("--report", type=Path, default=EVAL_DIR / "REPORT.md")
+    parser.add_argument("--baseline", type=Path, default=None,
+                        help="earlier full-run JSON to compare against in REPORT.md")
+    parser.add_argument("--notes", type=Path, default=None,
+                        help="Markdown explaining the changes since the baseline, put under the table")
+    parser.add_argument("--render", type=Path, default=None,
+                        help="rebuild REPORT.md from a saved result JSON, without running anything")
     args = parser.parse_args(argv)
+    if args.render:
+        report = json.loads(args.render.read_text(encoding="utf-8"))
+        add_comparison(report, args, load_questions(args.questions))
+        write_report(report, args.report, args.render)
+        print(f"Rebuilt {args.report} from {args.render}")
+        return
     for stream in (sys.stdout, sys.stderr):  # Windows consoles default to a legacy code page
         if hasattr(stream, "reconfigure"):
             stream.reconfigure(encoding="utf-8", errors="replace")
@@ -521,6 +609,7 @@ def main(argv: list[str] | None = None) -> None:
         "by_language": metrics_by_lang(rows, use_llm),
         "rows": [asdict(r) | {"question": q.question} for r, q in zip(rows, questions, strict=True)],
     }
+    add_comparison(report, args, questions)
     args.out_dir.mkdir(parents=True, exist_ok=True)
     result_file = args.out_dir / f"{datetime.now():%Y-%m-%d_%H%M%S}_{mode}.json"
     result_file.write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding="utf-8")
