@@ -1,0 +1,1421 @@
+{
+  "config": {
+    "date": "2026-11-03T23:13:28",
+    "mode": "full",
+    "questions": 50,
+    "answerable": 36,
+    "documents": 7,
+    "embedding_model": "intfloat/multilingual-e5-small",
+    "index_backend": "faiss",
+    "top_k": 5,
+    "min_score": 0.75,
+    "llm": "openai/gpt-oss-120b @ api.groq.com",
+    "llm_judge": false,
+    "llm_base_url": "https://api.groq.com/openai/v1",
+    "delay_s": 6.0,
+    "rate_limit_retries": 0
+  },
+  "metrics": {
+    "recall_at_k": 0.972,
+    "mrr": 0.908,
+    "no_answer_precision": 0.929,
+    "no_answer_recall": 0.929,
+    "false_refusal_rate": 0.028,
+    "hallucination_rate": 0.071,
+    "latency_p50_ms": 887.9,
+    "latency_p95_ms": 3926.8,
+    "answer_accuracy": 0.917,
+    "citation_validity": 0.944,
+    "citation_unverifiable_share": 0.056,
+    "llm_errors": 0
+  },
+  "by_language": {
+    "en": {
+      "questions": 8,
+      "recall_at_k": 1.0,
+      "refused_answerable": 0,
+      "answered_unanswerable": 1,
+      "answer_accuracy": 1.0
+    },
+    "ky": {
+      "questions": 8,
+      "recall_at_k": 1.0,
+      "refused_answerable": 0,
+      "answered_unanswerable": 0,
+      "answer_accuracy": 1.0
+    },
+    "ru": {
+      "questions": 34,
+      "recall_at_k": 0.962,
+      "refused_answerable": 1,
+      "answered_unanswerable": 0,
+      "answer_accuracy": 0.885
+    }
+  },
+  "rows": [
+    {
+      "id": "a01",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "delivery.txt",
+        "stores_and_contacts.txt",
+        "payment.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8882,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1028.7,
+      "answer": "Доставка по Бишкеку стоит 150 сомов, а при заказе от 3000 сомов доставка в Бишкеке бесплатна[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько стоит доставка по Бишкеку?"
+    },
+    {
+      "id": "a02",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "delivery.txt",
+        "stores_and_contacts.txt",
+        "payment.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8839,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 671.8,
+      "answer": "При заказе от 3000 сомов доставка по Бишкеку бесплатная. [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "С какой суммы доставка по Бишкеку бесплатная?"
+    },
+    {
+      "id": "a03",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "loyalty.txt",
+        "warranty.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8364,
+      "hit_at_k": false,
+      "reciprocal_rank": 0.0,
+      "refused": true,
+      "latency_ms": 1048.4,
+      "answer": "документы не содержат информацию о времени доставки.",
+      "facts_ok": false,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Если я закажу в 12 часов дня, когда привезут?"
+    },
+    {
+      "id": "a04",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "delivery.txt",
+        "payment.txt",
+        "returns.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.868,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1296.7,
+      "answer": "Доставка в Каракол стоит 350 сомов и занимает от 2 до 4 рабочих дней[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько стоит доставка в Каракол и сколько ждать?"
+    },
+    {
+      "id": "a05",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "warranty.txt",
+        "orders.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8146,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 2219.8,
+      "answer": "Подъём холодильника без лифта стоит 100 сомов за каждый этаж, поэтому на 5‑й этаж цена подъёма составит 5 × 100 = 500 сомов[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько стоит подъём холодильника на 5 этаж без лифта?"
+    },
+    {
+      "id": "a06",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "orders.txt",
+        "delivery.txt",
+        "returns.txt",
+        "returns.txt",
+        "loyalty.txt"
+      ],
+      "top_score": 0.8399,
+      "hit_at_k": true,
+      "reciprocal_rank": 0.5,
+      "refused": false,
+      "latency_ms": 511.5,
+      "answer": "Курьер звонит за 30 минут до приезда [2]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "За сколько минут курьер звонит перед приездом?"
+    },
+    {
+      "id": "a07",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "payment.txt",
+        "delivery.txt",
+        "orders.txt",
+        "returns.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8906,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 3006.3,
+      "answer": "Нет, наличный расчёт при получении возможен только для заказов до 30 000 сомов; заказы стоимостью 40 000 сомов нужно оплачивать заранее онлайн [1]",
+      "facts_ok": false,
+      "missing_facts": [
+        "30"
+      ],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Можно ли оплатить наличными заказ на 40 000 сомов?"
+    },
+    {
+      "id": "a08",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "payment.txt",
+        "loyalty.txt",
+        "orders.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8858,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1026.7,
+      "answer": "Заказ можно оплатить картой Visa, Mastercard или «Элкарт» на сайте, через приложения «MBank» и «О!Деньги» по QR‑коду, а также наличными или картой курьеру при получении (при заказе до 30 000 сом) [1]. Для юридических лиц доступна оплата по счёту, действительному 3 банковских дня [1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok",
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какими способами можно оплатить заказ?"
+    },
+    {
+      "id": "a09",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "payment.txt",
+        "payment.txt",
+        "loyalty.txt",
+        "returns.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8104,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 814.0,
+      "answer": "Счёт для юридического лица действует 3 банковских дня [2][1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok",
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько действует счёт для юридического лица?"
+    },
+    {
+      "id": "a10",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "warranty.txt",
+        "returns.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8679,
+      "hit_at_k": true,
+      "reciprocal_rank": 0.2,
+      "refused": false,
+      "latency_ms": 799.9,
+      "answer": "Если оплата прошла, а заказ не подтвердился, деньги автоматически возвращаются на карту в течение 5 рабочих дней [5]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Деньги списались, а заказ не подтвердился. Когда вернут?"
+    },
+    {
+      "id": "a11",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "returns.txt",
+        "payment.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.8962,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 568.1,
+      "answer": "Товар надлежащего качества можно вернуть в течение 14 дней со дня получения [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько дней есть на возврат товара?"
+    },
+    {
+      "id": "a12",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "returns.txt",
+        "warranty.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8684,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 590.3,
+      "answer": "Нет, шампунь надлежащего качества возврату не подлежит [1]",
+      "facts_ok": false,
+      "missing_facts": [
+        "космет"
+      ],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Можно ли вернуть шампунь надлежащего качества?"
+    },
+    {
+      "id": "a13",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "orders.txt",
+        "returns.txt",
+        "returns.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.9211,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 888.5,
+      "answer": "Курьерский забор товара для возврата стоит 150 сомов, если товар надлежащего качества, и бесплатен, если товар бракованный[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько стоит курьерский забор товара для возврата?"
+    },
+    {
+      "id": "a14",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "returns.txt",
+        "payment.txt",
+        "loyalty.txt"
+      ],
+      "top_score": 0.891,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1055.7,
+      "answer": "Деньги за возвращённый товар возвращаются тем же способом, которым был оплачен заказ, в течение 7 рабочих дней после того, как товар поступил на склад[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Через сколько вернут деньги за возвращённый товар?"
+    },
+    {
+      "id": "a15",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "warranty.txt",
+        "returns.txt",
+        "returns.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8587,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1619.9,
+      "answer": "Гарантийный срок на чайник составляет 12 месяцев [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какая гарантия на чайник?"
+    },
+    {
+      "id": "a16",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "warranty.txt",
+        "returns.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8543,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 909.7,
+      "answer": "Гарантия на стиральную машину составляет 24 месяца[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какая гарантия на стиральную машину?"
+    },
+    {
+      "id": "a17",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "orders.txt",
+        "stores_and_contacts.txt",
+        "warranty.txt",
+        "stores_and_contacts.txt"
+      ],
+      "top_score": 0.8053,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 604.7,
+      "answer": "Сервисный центр находится по адресу: Бишкек, улица Токтогула, 112 [4]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Где находится сервисный центр?"
+    },
+    {
+      "id": "a18",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "warranty.txt",
+        "returns.txt",
+        "payment.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8908,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 1201.6,
+      "answer": "Если ремонт по гарантии длится более 21 дня (три недели), товар заменят или вернут деньги [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Что будет, если ремонт по гарантии затянется больше трёх недель?"
+    },
+    {
+      "id": "a19",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "payment.txt",
+        "loyalty.txt",
+        "warranty.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.871,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 5705.8,
+      "answer": "Кешбэк на золотом уровне составляет 7 % от суммы покупки[1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какой кэшбэк на золотом уровне?"
+    },
+    {
+      "id": "a20",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "payment.txt",
+        "loyalty.txt",
+        "orders.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8912,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 4679.9,
+      "answer": "Бонусами можно оплатить до 30 % стоимости заказа [1][3]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok",
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какую часть заказа можно оплатить бонусами?"
+    },
+    {
+      "id": "a21",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "loyalty.txt",
+        "payment.txt",
+        "payment.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.8773,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 33032.2,
+      "answer": "Неиспользованные бонусы сгорают через 12 месяцев после их начисления[1]. Приветственные бонусы, получаемые в день рождения, действуют 7 дней[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok",
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Когда сгорают бонусы?"
+    },
+    {
+      "id": "a22",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "loyalty.txt",
+        "payment.txt",
+        "payment.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8893,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 836.3,
+      "answer": "В день рождения участнику предоставляется 500 приветственных бонусов [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько бонусов дарят на день рождения?"
+    },
+    {
+      "id": "a23",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "payment.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8474,
+      "hit_at_k": true,
+      "reciprocal_rank": 0.5,
+      "refused": false,
+      "latency_ms": 1029.7,
+      "answer": "Заказ хранится в пункте выдачи 5 дней [2]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько дней заказ хранится в пункте выдачи?"
+    },
+    {
+      "id": "a24",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "warranty.txt",
+        "orders.txt",
+        "loyalty.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8271,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 540.8,
+      "answer": "Служба поддержки работает ежедневно до 22:00 [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "До скольки работает служба поддержки?"
+    },
+    {
+      "id": "a25",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "payment.txt",
+        "orders.txt",
+        "orders.txt",
+        "returns.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8563,
+      "hit_at_k": true,
+      "reciprocal_rank": 0.5,
+      "refused": false,
+      "latency_ms": 764.8,
+      "answer": "Минимальная сумма заказа — 500 сомов[2]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Какая минимальная сумма заказа?"
+    },
+    {
+      "id": "a26",
+      "lang": "ru",
+      "answerable": true,
+      "retrieved": [
+        "orders.txt",
+        "orders.txt",
+        "returns.txt",
+        "returns.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8955,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 887.3,
+      "answer": "Да, отменить заказ можно, даже если курьер уже выехал, но стоимость доставки при этом не возвращается [1][2]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok",
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Можно ли отменить заказ, если курьер уже выехал?"
+    },
+    {
+      "id": "a27",
+      "lang": "ky",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "delivery.txt",
+        "stores_and_contacts.txt",
+        "stores_and_contacts.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8302,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 685.8,
+      "answer": "Бишкекке жеткирүү 150 сом турат; эгер заказдын суммасы 3000 сомдон ашса, жеткирүү акысыз болуп келет [1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Бишкекке жеткирүү канча турат?"
+    },
+    {
+      "id": "a28",
+      "lang": "ky",
+      "answerable": true,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "returns.txt",
+        "warranty.txt",
+        "loyalty.txt"
+      ],
+      "top_score": 0.8389,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 526.6,
+      "answer": "Товарды кабыл алган күндөн 14 күндүн ичинде кайтарып бере аласыз [1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Товарды канча күндүн ичинде кайтарып берсе болот?"
+    },
+    {
+      "id": "a29",
+      "lang": "ky",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "returns.txt",
+        "warranty.txt",
+        "payment.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.7951,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 890.9,
+      "answer": "Чайкын үчүн кепилдик мөөнөтү 12 айdır [1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Чайникке кепилдик канча?"
+    },
+    {
+      "id": "a30",
+      "lang": "ky",
+      "answerable": true,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "delivery.txt",
+        "orders.txt",
+        "orders.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.8288,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 480.5,
+      "answer": "Колдоо кызматынын телефон номери 0312 55 77 00 [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Колдоо кызматынын телефон номери кандай?"
+    },
+    {
+      "id": "a31",
+      "lang": "ky",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "payment.txt",
+        "payment.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8215,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 529.4,
+      "answer": "Бонустар менен заказдын баасынан 30%-га чейин төлөө мүмкүн [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Бонустар менен заказдын канча пайызын төлөсө болот?"
+    },
+    {
+      "id": "a32",
+      "lang": "en",
+      "answerable": true,
+      "retrieved": [
+        "delivery.txt",
+        "stores_and_contacts.txt",
+        "delivery.txt",
+        "returns.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8157,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 2479.7,
+      "answer": "Delivery to Osh costs 350 som [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "How much does delivery to Osh cost?"
+    },
+    {
+      "id": "a33",
+      "lang": "en",
+      "answerable": true,
+      "retrieved": [
+        "warranty.txt",
+        "returns.txt",
+        "warranty.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.8027,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 717.8,
+      "answer": "The warranty for a phone charger (an accessory such as a charger) is 6 months[3].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "What is the warranty on a phone charger?"
+    },
+    {
+      "id": "a34",
+      "lang": "en",
+      "answerable": true,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "stores_and_contacts.txt",
+        "delivery.txt",
+        "payment.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.7935,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 787.1,
+      "answer": "Pickup points are open every day from 10:00 am to 8:00 pm, with no days off. [1]",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "What are the opening hours of the pickup points?"
+    },
+    {
+      "id": "a35",
+      "lang": "en",
+      "answerable": true,
+      "retrieved": [
+        "loyalty.txt",
+        "loyalty.txt",
+        "returns.txt",
+        "warranty.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.781,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 658.6,
+      "answer": "You need to spend 50,000 som in a calendar year to attain the Silver level[1].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "cross_language"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "How much do I need to spend in a year to reach the Silver level?"
+    },
+    {
+      "id": "a36",
+      "lang": "en",
+      "answerable": true,
+      "retrieved": [
+        "orders.txt",
+        "orders.txt",
+        "delivery.txt",
+        "delivery.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.7885,
+      "hit_at_k": true,
+      "reciprocal_rank": 1.0,
+      "refused": false,
+      "latency_ms": 662.7,
+      "answer": "A single order can include up to 50 items[2].",
+      "facts_ok": true,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "ok"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "What is the maximum number of items in one order?"
+    },
+    {
+      "id": "n01",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "orders.txt",
+        "delivery.txt",
+        "returns.txt",
+        "orders.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8211,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 966.7,
+      "answer": "В представленных документах нет информации о вакансиях курьеров.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Есть ли у вас вакансии курьеров?"
+    },
+    {
+      "id": "n02",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "loyalty.txt",
+        "orders.txt",
+        "payment.txt",
+        "returns.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.8108,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 860.5,
+      "answer": "В предоставленных документах нет информации о продаже подарочных сертификатов.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Продаёте ли вы подарочные сертификаты?"
+    },
+    {
+      "id": "n03",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "delivery.txt",
+        "delivery.txt"
+      ],
+      "top_score": 0.8397,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 1132.6,
+      "answer": "Документы не содержат информацию о наличии парковки у пункта выдачи на проспекте Чуй.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Есть ли парковка у пункта выдачи на проспекте Чуй?"
+    },
+    {
+      "id": "n04",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "returns.txt",
+        "warranty.txt",
+        "loyalty.txt"
+      ],
+      "top_score": 0.8336,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 482.2,
+      "answer": "документы не содержат информацию о рассрочке на 12 месяцев.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Можно ли купить товар в рассрочку на 12 месяцев?"
+    },
+    {
+      "id": "n05",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "payment.txt",
+        "orders.txt",
+        "loyalty.txt",
+        "warranty.txt",
+        "loyalty.txt"
+      ],
+      "top_score": 0.779,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 975.0,
+      "answer": "Документы не содержат эту информацию.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Есть ли у вас мобильное приложение для iPhone?"
+    },
+    {
+      "id": "n06",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "returns.txt",
+        "returns.txt",
+        "warranty.txt",
+        "orders.txt",
+        "orders.txt"
+      ],
+      "top_score": 0.8416,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 664.9,
+      "answer": "Документы не содержат информацию о стоимости сборки шкафа после доставки.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Сколько стоит сборка шкафа после доставки?"
+    },
+    {
+      "id": "n07",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "warranty.txt",
+        "orders.txt",
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "returns.txt"
+      ],
+      "top_score": 0.7644,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 1055.3,
+      "answer": "Документы не содержат информацию о директоре компании.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Кто является директором компании?"
+    },
+    {
+      "id": "n08",
+      "lang": "ru",
+      "answerable": false,
+      "retrieved": [
+        "delivery.txt",
+        "delivery.txt",
+        "orders.txt",
+        "orders.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.7855,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 479.9,
+      "answer": "документы не содержат информацию о доставке в Алматы.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Доставляете ли вы в Алматы?"
+    },
+    {
+      "id": "n09",
+      "lang": "ky",
+      "answerable": false,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "delivery.txt",
+        "orders.txt",
+        "orders.txt",
+        "warranty.txt"
+      ],
+      "top_score": 0.7765,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 1361.6,
+      "answer": "Документтерде курьер болуп иштөөгө жумуш барбы деген маалымат жок.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Курьер болуп иштөөгө жумуш барбы?"
+    },
+    {
+      "id": "n10",
+      "lang": "ky",
+      "answerable": false,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "delivery.txt",
+        "loyalty.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.8087,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 692.0,
+      "answer": "В предоставленных документах нет информации о продаже сертификатов.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Белек сертификаттарын сатасыздарбы?"
+    },
+    {
+      "id": "n11",
+      "lang": "ky",
+      "answerable": false,
+      "retrieved": [
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "warranty.txt",
+        "delivery.txt",
+        "stores_and_contacts.txt"
+      ],
+      "top_score": 0.7705,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 1312.7,
+      "answer": "документтерде дүкөндүн жанында унаа токтотуучу жай жөнүндө маалымат жок.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Дүкөндүн жанында унаа токтотуучу жай барбы?"
+    },
+    {
+      "id": "n12",
+      "lang": "en",
+      "answerable": false,
+      "retrieved": [
+        "orders.txt",
+        "stores_and_contacts.txt",
+        "orders.txt",
+        "loyalty.txt",
+        "payment.txt"
+      ],
+      "top_score": 0.7563,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 653.1,
+      "answer": "The documents do not contain information about franchise opportunities.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Do you offer franchise opportunities?"
+    },
+    {
+      "id": "n13",
+      "lang": "en",
+      "answerable": false,
+      "retrieved": [
+        "payment.txt",
+        "orders.txt",
+        "loyalty.txt",
+        "payment.txt",
+        "stores_and_contacts.txt"
+      ],
+      "top_score": 0.7816,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": false,
+      "latency_ms": 1162.2,
+      "answer": "No, Bitcoin is not listed as an accepted payment method; you can pay with Visa, Mastercard, “Элкарт”, MBank or O!Money QR‑code, cash, or card to the courier[1].",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [
+        "cross_language"
+      ],
+      "notice": null,
+      "llm_error": null,
+      "question": "Can I pay with Bitcoin?"
+    },
+    {
+      "id": "n14",
+      "lang": "en",
+      "answerable": false,
+      "retrieved": [
+        "orders.txt",
+        "loyalty.txt",
+        "orders.txt",
+        "payment.txt",
+        "stores_and_contacts.txt"
+      ],
+      "top_score": 0.7794,
+      "hit_at_k": null,
+      "reciprocal_rank": null,
+      "refused": true,
+      "latency_ms": 1217.1,
+      "answer": "The documents do not contain information about a student discount.",
+      "facts_ok": null,
+      "missing_facts": [],
+      "judge_ok": null,
+      "citation_statuses": [],
+      "notice": null,
+      "llm_error": null,
+      "question": "Do you have a student discount?"
+    }
+  ],
+  "comparison": {
+    "baseline_file": "eval/results/2026-11-03_225652_full.json",
+    "baseline_llm": "openai/gpt-oss-120b @ api.groq.com",
+    "baseline_metrics": {
+      "recall_at_k": 0.972,
+      "mrr": 0.908,
+      "no_answer_precision": 0.609,
+      "no_answer_recall": 1.0,
+      "false_refusal_rate": 0.25,
+      "hallucination_rate": 0.0,
+      "latency_p50_ms": 832.0,
+      "latency_p95_ms": 1247.0,
+      "answer_accuracy": 0.722,
+      "citation_validity": 1.0,
+      "citation_unverifiable_share": 0.0,
+      "llm_errors": 0
+    },
+    "rescored_metrics": {
+      "recall_at_k": 0.972,
+      "mrr": 0.908,
+      "no_answer_precision": 0.609,
+      "no_answer_recall": 1.0,
+      "false_refusal_rate": 0.25,
+      "hallucination_rate": 0.0,
+      "latency_p50_ms": 832.0,
+      "latency_p95_ms": 1247.0,
+      "answer_accuracy": 0.75,
+      "citation_validity": 1.0,
+      "citation_unverifiable_share": 0.0,
+      "llm_errors": 0
+    },
+    "notes": null
+  }
+}
