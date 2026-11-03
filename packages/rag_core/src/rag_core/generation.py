@@ -215,6 +215,16 @@ def split_no_answer(text: str) -> tuple[bool, str]:
     return False, text
 
 
+# Some models (gpt-oss) write markers in their tool-citation style: 【1】, 【1†source】 or
+# fullwidth ［1］. Without normalizing, a correct cited answer would look uncited.
+_BRACKET_VARIANT = re.compile(r"[【［]\s*(\d+)\s*(?:†[^】］]*)?[】］]")
+
+
+def normalize_citation_markers(text: str) -> str:
+    """Rewrite bracket variants of a citation marker to the plain ``[n]`` form."""
+    return _BRACKET_VARIANT.sub(r"[\1]", text)
+
+
 def remove_invalid_citations(text: str, n_sources: int) -> str:
     """Drop [n] markers that point at no source, so the UI never links to nothing."""
     return _SPACED_CITATION.sub(
@@ -225,7 +235,8 @@ def remove_invalid_citations(text: str, n_sources: int) -> str:
 def generate_answer(llm: BaseLLMClient, question: str, results: list[SearchResult]) -> Answer:
     if not results:
         return Answer("", [], answer_found=False)
-    text = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, results)).strip()
+    reply = llm.complete(SYSTEM_PROMPT, build_user_prompt(question, results))
+    text = normalize_citation_markers(reply).strip()
     no_answer, explanation = split_no_answer(text)
     if no_answer:
         return Answer(explanation, [], answer_found=False)

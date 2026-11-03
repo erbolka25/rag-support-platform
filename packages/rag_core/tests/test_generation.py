@@ -118,6 +118,27 @@ def test_answer_without_valid_citation_is_not_found(reply):
     assert answer.citations == []
 
 
+@pytest.mark.parametrize(
+    "reply, text",
+    [
+        ("Забор товара стоит 150 сомов【2】.", "Забор товара стоит 150 сомов[2]."),
+        ("Warranty is 6 months 【3】.", "Warranty is 6 months [3]."),
+        ("Срок 7 дней【 1 】 и 14 дней【2†returns.txt】.", "Срок 7 дней[1] и 14 дней[2]."),
+        ("Срок 7 дней ［1］.", "Срок 7 дней [1]."),
+    ],
+)
+def test_bracket_variants_of_citations_count_as_citations(reply, text):
+    answer = generate_answer(FakeLLM(reply), "q", RESULTS)
+    assert answer.answer_found
+    assert answer.text == text
+    assert answer.citations
+
+
+def test_bracket_variant_pointing_at_no_source_is_still_rejected():
+    answer = generate_answer(FakeLLM("Бюджет 50 000 сом【7】."), "q", RESULTS)
+    assert not answer.answer_found
+
+
 def test_out_of_range_markers_are_removed_from_the_answer():
     answer = generate_answer(FakeLLM("Отпуск 28 дней [1][9]. Пароль раз в 90 дней [4]."), "q", RESULTS)
     assert answer.answer_found
