@@ -23,7 +23,8 @@ The demo starts with the knowledge base of **TechNomad**, a fictional electronic
 "Draft". Seven of them are answered by the documents, three should be escalated.
 
 - LLM: `openai/gpt-oss-20b` on Groq, embeddings: `intfloat/multilingual-e5-small` on CPU
-  (no GPU is used; `app.py` serves the copilot's FastAPI app and web UI with uvicorn).
+  (the Space runs on ZeroGPU hardware, but the GPU is never used; `app.py` serves the
+  copilot's FastAPI app and web UI with uvicorn).
 - Limit: 20 drafts and uploads per hour per IP. Data is reset when the Space restarts.
 - API docs: `/docs`.
 

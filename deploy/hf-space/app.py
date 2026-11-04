@@ -1,16 +1,21 @@
-"""Hugging Face Space entry point (Gradio SDK): the copilot's FastAPI app and web UI on :7860.
+"""Hugging Face Space entry point (Gradio SDK, ZeroGPU): the copilot's FastAPI app and UI on :7860.
 
 The Space runs ``python app.py``; uvicorn serves support_copilot.main:app directly, so the
 home page is the copilot's own UI (Swagger at /docs). rag_core and the copilot are installed
 from requirements.txt at a pinned commit; the demo knowledge base is not part of those
 packages, so it is downloaded from the same commit at startup.
 
-Everything runs on CPU. ``spaces`` is deliberately not imported and nothing is decorated with
-@spaces.GPU: on ZeroGPU hardware ``import spaces`` patches torch for CUDA and fails with the
-CPU-only torch build, and a Space without @spaces.GPU functions starts normally.
+ZeroGPU: ``spaces`` must be imported before torch, and the Space must report at least one
+@spaces.GPU function at startup or it is stopped. ``spaces`` sends that report from a hook on
+gradio's ``Blocks.launch``, which never runs here (no gradio UI), so main() sends it itself.
+The GPU is never used: ``gpu_warmup`` is a no-op and the embedding model runs on CPU.
 """
 
-from __future__ import annotations
+# spaces first, before anything that may import torch.
+try:
+    import spaces
+except ImportError:  # local runs and tests: no ZeroGPU
+    spaces = None
 
 import os
 import re
@@ -27,6 +32,33 @@ DEMO_FILES = [
     "kb/warranty.txt",
     "shop_tickets.json",
 ]
+
+
+def _gpu(func):
+    return spaces.GPU(func) if spaces is not None else func
+
+
+@_gpu
+def gpu_warmup() -> None:
+    """Never called: it only satisfies ZeroGPU's "at least one @spaces.GPU function"."""
+
+
+def on_zero_gpu() -> bool:
+    return os.environ.get("SPACES_ZERO_GPU", "").lower() in ("1", "t", "true")
+
+
+def report_zerogpu_startup() -> None:
+    """Tell ZeroGPU the app started and which @spaces.GPU functions it has.
+
+    ``spaces.zero.startup`` exists in both spaces 0.51 (as a gradio launch hook) and 0.52+
+    (also called by ZeroGPUMiddleware on lifespan startup).
+    """
+    if spaces is None or not on_zero_gpu():
+        return
+    startup = getattr(getattr(spaces, "zero", None), "startup", None)
+    if startup is None:
+        raise RuntimeError("This spaces version has no spaces.zero.startup()")
+    startup()
 
 
 def pinned_sha(requirements: Path = HERE / "requirements.txt") -> str:
@@ -73,6 +105,7 @@ def main() -> None:
     import uvicorn
     from support_copilot.main import app  # reads the settings above, loads the demo data
 
+    report_zerogpu_startup()
     # One process: the per-IP limiter lives in memory. The Spaces proxy is the only way in,
     # so its X-Forwarded-For is trusted for the client address.
     uvicorn.run(

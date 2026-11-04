@@ -22,11 +22,11 @@ def test_requirements_pin_one_commit(space_app):
     sha = space_app.pinned_sha()
     assert re.fullmatch(r"[0-9a-f]{40}", sha)
     text = (SPACE / "requirements.txt").read_text(encoding="utf-8")
-    # ZeroGPU rejects other torch versions at configuration time; the CPU index makes the
-    # resolver pick the +cpu build of the same version.
+    # ZeroGPU rejects other torch versions at configuration time, and `import spaces` needs
+    # the regular (CUDA) build: no CPU-only index.
     torch_pin = re.search(r"^torch==(\S+)$", text, re.MULTILINE).group(1)
     assert torch_pin in {"2.13.0", "2.12.1", "2.11.0", "2.10.0", "2.9.1", "2.8.0"}
-    assert "--extra-index-url https://download.pytorch.org/whl/cpu" in text
+    assert "download.pytorch.org" not in text and "+cpu" not in text
     assert "#subdirectory=packages/rag_core" in text
     assert "#subdirectory=apps/support_copilot" in text
 
@@ -73,3 +73,64 @@ def test_configure_keeps_space_settings(space_app, tmp_path, monkeypatch):
     assert env["RATE_LIMIT_PER_HOUR"] == "5"
     assert env["LLM_PROVIDER"] == "openai"
     assert env["DEMO_KB_DIR"] == str(tmp_path / "demo" / "kb")
+
+
+class FakeSpaces:
+    """Stands in for the `spaces` package: records @GPU functions and startup reports."""
+
+    def __init__(self):
+        self.gpu_functions = []
+        self.startups = 0
+        self.zero = type("Zero", (), {"startup": self._startup})()
+
+    def GPU(self, func):  # mirrors spaces.GPU
+        self.gpu_functions.append(func.__name__)
+        return func
+
+    def _startup(self):
+        self.startups += 1
+
+
+def load_space_app(monkeypatch, fake):
+    """Import app.py with `fake` as the installed spaces package."""
+    import sys
+
+    monkeypatch.setitem(sys.modules, "spaces", fake)
+    spec = importlib.util.spec_from_file_location("hf_space_app_zero", SPACE / "app.py")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_gpu_function_registered_at_import(monkeypatch):
+    fake = FakeSpaces()
+    load_space_app(monkeypatch, fake)
+    assert fake.gpu_functions == ["gpu_warmup"]
+
+
+def test_startup_reported_on_zero_gpu_only(monkeypatch):
+    fake = FakeSpaces()
+    module = load_space_app(monkeypatch, fake)
+    monkeypatch.delenv("SPACES_ZERO_GPU", raising=False)
+    module.report_zerogpu_startup()
+    assert fake.startups == 0
+    monkeypatch.setenv("SPACES_ZERO_GPU", "true")
+    module.report_zerogpu_startup()
+    assert fake.startups == 1
+
+
+def test_spaces_imported_before_anything_else():
+    import ast
+
+    tree = ast.parse((SPACE / "app.py").read_text(encoding="utf-8"))
+    imports = sorted((n for n in ast.walk(tree) if isinstance(n, (ast.Import, ast.ImportFrom))),
+                     key=lambda n: n.lineno)
+    first = imports[0]
+    assert isinstance(first, ast.Import) and first.names[0].name == "spaces"
+
+
+def test_without_spaces_package(space_app):
+    # Local runs: no spaces, gpu_warmup is a plain function, no startup report.
+    assert space_app.spaces is None
+    space_app.report_zerogpu_startup()
+    assert space_app.gpu_warmup() is None
