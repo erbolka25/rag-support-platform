@@ -58,3 +58,33 @@ def test_shipped_demo_tickets_are_valid():
     assert len(tickets) == 10
     for item in tickets:
         TicketCreate.model_validate(item)
+
+
+def test_limiter_sliding_window():
+    from support_copilot.api.ratelimit import RateLimiter
+
+    now = [0.0]
+    limiter = RateLimiter(2, clock=lambda: now[0])
+    assert limiter.hit("a") == 0 and limiter.hit("a") == 0
+    assert limiter.hit("a") == 3600
+    assert limiter.hit("b") == 0  # other IPs keep their own budget
+    now[0] = 3600.0
+    assert limiter.hit("a") == 0
+
+
+def test_app_does_not_build_rag_core_web_app(tmp_path):
+    """Importing rag_core.api builds rag_core's own app (second service, login warnings)."""
+    import os
+    import subprocess
+    import sys
+
+    code = ("import sys, support_copilot.main; "
+            "print(sorted(m for m in sys.modules if m.startswith('rag_core.api')))")
+    env = {**os.environ, "LLM_PROVIDER": "none", "DATA_DIR": str(tmp_path),
+           "RATE_LIMIT_PER_HOUR": "20"}
+    env.pop("DEMO_KB_DIR", None)
+    out = subprocess.run([sys.executable, "-c", code], check=False, capture_output=True,
+                         text=True, env=env, timeout=120)
+    assert out.returncode == 0, out.stderr
+    assert out.stdout.strip() == "[]"
+    assert "APP_PASSWORD" not in out.stderr
