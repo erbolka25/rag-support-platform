@@ -3,9 +3,12 @@ title: Support Copilot
 emoji: 🎧
 colorFrom: indigo
 colorTo: blue
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: 6.31.0
+python_version: "3.12"
+app_file: app.py
 pinned: false
+license: mit
 short_description: Source-cited support replies in RU/EN/KG via RAG
 ---
 
@@ -19,7 +22,8 @@ The demo starts with the knowledge base of **TechNomad**, a fictional electronic
 (delivery, returns, payment, warranty), and ten customer tickets: pick one and press
 "Draft". Seven of them are answered by the documents, three should be escalated.
 
-- LLM: `openai/gpt-oss-20b` on Groq, embeddings: `intfloat/multilingual-e5-small` on CPU.
+- LLM: `openai/gpt-oss-20b` on Groq, embeddings: `intfloat/multilingual-e5-small` on CPU
+  (no GPU is used; `app.py` serves the copilot's FastAPI app and web UI with uvicorn).
 - Limit: 20 drafts and uploads per hour per IP. Data is reset when the Space restarts.
 - API docs: `/docs`.
 
