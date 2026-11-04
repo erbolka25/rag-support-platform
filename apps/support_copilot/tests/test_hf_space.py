@@ -22,7 +22,11 @@ def test_requirements_pin_one_commit(space_app):
     sha = space_app.pinned_sha()
     assert re.fullmatch(r"[0-9a-f]{40}", sha)
     text = (SPACE / "requirements.txt").read_text(encoding="utf-8")
-    assert "torch==" in text and "+cpu" in text
+    # ZeroGPU rejects other torch versions at configuration time; the CPU index makes the
+    # resolver pick the +cpu build of the same version.
+    torch_pin = re.search(r"^torch==(\S+)$", text, re.MULTILINE).group(1)
+    assert torch_pin in {"2.13.0", "2.12.1", "2.11.0", "2.10.0", "2.9.1", "2.8.0"}
+    assert "--extra-index-url https://download.pytorch.org/whl/cpu" in text
     assert "#subdirectory=packages/rag_core" in text
     assert "#subdirectory=apps/support_copilot" in text
 

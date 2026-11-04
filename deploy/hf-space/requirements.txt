@@ -1,7 +1,8 @@
 # Installed by the Space build on top of gradio (sdk_version in README.md).
-# CPU-only torch: the embedding model runs on CPU, no GPU is used.
+# torch 2.13.0: a version ZeroGPU accepts (2.8.0-2.13.0). With the CPU index the resolver
+# picks 2.13.0+cpu (a local version satisfies ==2.13.0): the embedding model runs on CPU.
 --extra-index-url https://download.pytorch.org/whl/cpu
-torch==2.15.0+cpu
+torch==2.13.0
 # rag_core and the copilot from the monorepo at a pinned commit; app.py reads this SHA too.
 rag-core @ git+https://github.com/erbolka25/rag-support-platform@dd45013b001ee9a08079b01811416f818c78a39a#subdirectory=packages/rag_core
 support-copilot @ git+https://github.com/erbolka25/rag-support-platform@dd45013b001ee9a08079b01811416f818c78a39a#subdirectory=apps/support_copilot
