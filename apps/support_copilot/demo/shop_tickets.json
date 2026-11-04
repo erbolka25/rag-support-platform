@@ -1,0 +1,52 @@
+[
+  {
+    "customer_name": "Айгуль Токтосунова",
+    "customer_email": "aigul@example.com",
+    "question": "Здравствуйте! Сколько стоит доставка в Ош и сколько дней ждать заказ?"
+  },
+  {
+    "customer_name": "Бакыт Асанов",
+    "customer_email": "bakyt@example.com",
+    "question": "Купил наушники-вкладыши, вскрыл упаковку, но звук не понравился. Могу я их вернуть?"
+  },
+  {
+    "customer_name": "John Miller",
+    "customer_email": "john.miller@example.com",
+    "question": "Hi, I live in Bishkek. Can I pay in cash to the courier when my order arrives?"
+  },
+  {
+    "customer_name": "Нурлан Жумабеков",
+    "customer_email": "nurlan@example.com",
+    "question": "Какая гарантия на ноутбук и куда его нести, если он сломался?"
+  },
+  {
+    "customer_name": "Жыпар Мамытова",
+    "customer_email": "jypar@example.com",
+    "question": "Саламатсызбы! Ноутбукка кепилдик канча убакытка берилет?"
+  },
+  {
+    "customer_name": "Елена Ким",
+    "customer_email": "elena.kim@example.com",
+    "question": "Я вернула товар, который оплачивала банковской картой. Когда мне вернут деньги?"
+  },
+  {
+    "customer_name": "Sarah Lee",
+    "customer_email": "sarah.lee@example.com",
+    "question": "Does the warranty cover a cracked smartphone screen?"
+  },
+  {
+    "customer_name": "Азамат Абдыкеров",
+    "customer_email": "azamat@example.com",
+    "question": "Есть ли у вас программа лояльности или бонусные баллы за покупки?"
+  },
+  {
+    "customer_name": "Мээрим Садыкова",
+    "customer_email": "meerim@example.com",
+    "question": "Вы продаёте восстановленные iPhone? Какая на них цена?"
+  },
+  {
+    "customer_name": "Тимур Осмонов",
+    "customer_email": "timur@example.com",
+    "question": "Можно сдать мой старый смартфон в зачёт нового (trade-in)? Сколько вы за него дадите?"
+  }
+]

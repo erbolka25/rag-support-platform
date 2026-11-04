@@ -33,6 +33,7 @@
       },
       "errors": {
         "status": "Ошибка сервера (код {status}). Попробуйте ещё раз.",
+        "rate_limited": "Лимит демо на черновики и загрузки с вашего адреса исчерпан. Попробуйте через час.",
         "unreachable": "Сервер недоступен. Проверьте, что он запущен, и попробуйте снова.",
         "timeout": "Сервер слишком долго не отвечает. Попробуйте ещё раз.",
         "bad_response": "Сервер вернул непонятный ответ.",
@@ -177,6 +178,7 @@
       },
       "errors": {
         "status": "Server error (status {status}). Please try again.",
+        "rate_limited": "The demo limit for drafts and uploads from your address is used up. Please try again in an hour.",
         "unreachable": "The server is unavailable. Make sure it is running and try again.",
         "timeout": "The server took too long to respond. Please try again.",
         "bad_response": "The server sent an unexpected response.",

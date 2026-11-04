@@ -50,6 +50,13 @@ class CopilotSettings(BaseSettings):
     chunk_overlap_chars: int = 100
     max_documents: int = 50
 
+    # Public demo: LLM drafts and uploads per client IP per hour (0 = no limit)
+    rate_limit_per_hour: int = 0
+    # Loaded into an empty knowledge base at startup: *.txt from demo_kb_dir and the tickets
+    # in demo_tickets_file (JSON list of {customer_name, customer_email, question}).
+    demo_kb_dir: Path | None = None
+    demo_tickets_file: Path | None = None
+
     @field_validator("data_dir")
     @classmethod
     def _resolve_data_dir(cls, value: Path) -> Path:
