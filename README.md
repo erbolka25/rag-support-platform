@@ -2,6 +2,8 @@
 
 A multilingual (RU / KG / EN) RAG engine and a customer-support copilot that drafts source-cited replies and hands a ticket to a human when the knowledge base has no answer — built for support teams, measured on a 50-question benchmark.
 
+**Live demo:** [huggingface.co/spaces/erbolka/support-copilot](https://huggingface.co/spaces/erbolka/support-copilot) — the Support Copilot with a demo electronics-store knowledge base and ten tickets: pick one and draft a reply (`gpt-oss-20b` on Groq, 20 drafts per hour per IP, data resets on restart).
+
 | Answer accuracy | False refusals | Retrieval Recall@5 | Languages |
 |---|---|---|---|
 | **95.8% ± 2.0 pp** | **25% → 2.8%** | **97.2%** | **KG / RU / EN** |
